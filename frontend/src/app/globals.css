@@ -1,0 +1,122 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-canvas: #F9F9FB;
+  --color-surface: #FFFFFF;
+  --color-border-subtle: #E4E4E7;
+  
+  --color-text-primary: #09090B;
+  --color-text-muted: #71717A;
+  --color-brand-accent: #2563EB;
+  --color-error: #DC2626;
+
+  --shadow-diffuse: 0px 1px 3px 0px rgba(0,0,0,0.02), 0px 1px 2px -1px rgba(0,0,0,0.03);
+
+  --font-sans: var(--font-geist-sans);
+}
+
+:root {
+  --background: var(--color-canvas);
+  --foreground: var(--color-text-primary);
+}
+
+.dark {
+  --color-canvas: #09090B;
+  --color-surface: #18181B;
+  --color-border-subtle: #27272A;
+  --color-text-primary: #F4F4F5;
+  --color-text-muted: #A1A1AA;
+  
+  --background: var(--color-canvas);
+  --foreground: var(--color-text-primary);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), sans-serif;
+}
+
+/* Text Scaling Matrix (Grid-Safe by targeting typography utilities explicitly) */
+html.font-scale-lg {
+  --text-xs: 0.875rem;
+  --text-sm: 1rem;
+  --text-base: 1.125rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.5rem;
+}
+
+html.font-scale-xl {
+  --text-xs: 1rem;
+  --text-sm: 1.125rem;
+  --text-base: 1.25rem;
+  --text-lg: 1.5rem;
+  --text-xl: 1.875rem;
+}
+
+/* Explicit class targeting fallback for Tailwind v4 scale safety */
+html.font-scale-lg .text-xs { font-size: 0.875rem !important; }
+html.font-scale-lg .text-sm { font-size: 1rem !important; }
+html.font-scale-lg .text-base { font-size: 1.125rem !important; }
+html.font-scale-lg .text-lg { font-size: 1.25rem !important; }
+html.font-scale-lg .text-xl { font-size: 1.5rem !important; }
+
+html.font-scale-xl .text-xs { font-size: 1rem !important; }
+html.font-scale-xl .text-sm { font-size: 1.125rem !important; }
+html.font-scale-xl .text-base { font-size: 1.25rem !important; }
+html.font-scale-xl .text-lg { font-size: 1.5rem !important; }
+html.font-scale-xl .text-xl { font-size: 1.875rem !important; }
+
+
+/* Global High Contrast Motor */
+
+/* Light Mode + High Contrast */
+body.contrast-high {
+  --color-canvas: #FFFFFF;
+  --color-surface: #FFFFFF;
+  --color-border-subtle: #000000;
+  --color-text-primary: #000000;
+  --color-text-muted: #000000;
+  --color-brand-accent: #000000;
+  --shadow-diffuse: none;
+}
+
+/* Dark Mode + High Contrast */
+html.dark body.contrast-high {
+  --color-canvas: #000000;
+  --color-surface: #000000;
+  --color-border-subtle: #FFFFFF;
+  --color-text-primary: #FFFFFF;
+  --color-text-muted: #FFFFFF;
+  --color-brand-accent: #FFFFFF;
+  --shadow-diffuse: none;
+}
+
+/* Enforce High Visibility Solid Borders on components using borders */
+body.contrast-high [class*="border"] {
+  border-width: 2px !important;
+}
+
+/* Primary controls interaction */
+.btn-primary {
+  @apply bg-brand-accent text-white transition-transform duration-100 ease-in-out font-medium rounded-md px-4 py-2 flex items-center justify-center;
+}
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+/* Secondary controls interaction */
+.btn-secondary {
+  @apply bg-surface border border-border-subtle text-text-primary transition-colors duration-150 rounded-md px-4 py-2 font-medium flex items-center justify-center;
+}
+.btn-secondary:hover {
+  @apply bg-canvas;
+}
+
+/* Input fields */
+.input-field {
+  @apply bg-surface border border-border-subtle text-text-primary rounded-md px-3 py-2 outline-none transition-shadow;
+}
+.input-field:focus-visible {
+  @apply border-brand-accent ring-1 ring-brand-accent;
+}

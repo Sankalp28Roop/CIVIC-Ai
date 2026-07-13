@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { API_BASE_URL } from '@/utils/api';
 
 interface ThemeContextType {
   system_theme: string;
@@ -28,7 +29,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const fetchPreferences = async () => {
       try {
-        const res = await fetch('http://localhost:8000/users/me/settings');
+        const res = await fetch(`${API_BASE_URL}/users/me/settings`);
         if (res.ok) {
           const data = await res.json();
           if (data.system_theme) setSystemTheme(data.system_theme);

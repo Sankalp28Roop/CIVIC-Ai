@@ -6,6 +6,7 @@ import { StatusCard, StatusCardSkeleton } from '@/components/ui/StatusCard';
 import { useSchemes } from '@/hooks/useSchemes';
 import { ChevronRight, Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { API_BASE_URL } from '@/utils/api';
 
 export default function Home() {
   const { data: schemes, isLoading: isLoadingSchemes, error: schemesError } = useSchemes();
@@ -17,7 +18,7 @@ export default function Home() {
   useEffect(() => {
     async function fetchUser() {
       try {
-        const res = await fetch('http://localhost:8000/users/');
+        const res = await fetch(`${API_BASE_URL}/users/`);
         if (res.ok) {
           const users = await res.json();
           if (users && users.length > 0) {

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { User, Shield, Accessibility, Save, Activity, CheckCircle } from 'lucide-react';
 import { useFetchData } from '@/hooks/useFetchData';
 import { useTheme } from '@/context/ThemeContext';
+import { API_BASE_URL } from '@/utils/api';
 
 const Toggle = ({ label, checked, onChange }: { label: string, checked: boolean, onChange: (v: boolean) => void }) => (
   <div className="flex items-center justify-between py-3 border-b border-border-subtle last:border-0">
@@ -44,7 +45,7 @@ export default function SettingsPage() {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      const res = await fetch('http://localhost:8000/users/me/settings', {
+      const res = await fetch(`${API_BASE_URL}/users/me/settings`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(settings)

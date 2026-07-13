@@ -3,6 +3,7 @@
 import React, { useState, useRef } from 'react';
 import { FileText, Upload, Loader2, CheckCircle2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { API_BASE_URL } from '@/utils/api';
 
 export function IngestionArea() {
   const router = useRouter();
@@ -49,7 +50,7 @@ export function IngestionArea() {
       const formData = new FormData();
       formData.append('file', file);
 
-      const res = await fetch('http://localhost:8000/documents/analyze-doc', {
+      const res = await fetch(`${API_BASE_URL}/documents/analyze-doc`, {
         method: 'POST',
         body: formData,
       });

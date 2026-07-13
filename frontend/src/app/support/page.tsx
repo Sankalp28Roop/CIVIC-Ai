@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useFetchData } from '@/hooks/useFetchData';
 import { HelpCircle, MessageSquare, Plus, Minus, Send, CheckCircle } from 'lucide-react';
+import { API_BASE_URL } from '@/utils/api';
 
 interface FAQ {
   question: string;
@@ -21,7 +22,7 @@ export default function SupportPage() {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      await fetch('http://localhost:8000/support/feedback', {
+      await fetch(`${API_BASE_URL}/support/feedback`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(feedback)

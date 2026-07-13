@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Bell, Search, Menu, Accessibility, Eye } from 'lucide-react';
 import { useFetchData } from '@/hooks/useFetchData';
 import { useTheme } from '@/context/ThemeContext';
+import { API_BASE_URL } from '@/utils/api';
 
 interface Notification {
   id: string;
@@ -61,7 +62,7 @@ export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
   const handleFontSizeChange = (size: string) => {
     updatePreferences({ font_size: size });
     // Simulate API call persistence
-    fetch('http://localhost:8000/users/me/settings', {
+    fetch(`${API_BASE_URL}/users/me/settings`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ font_size: size })
@@ -72,7 +73,7 @@ export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
     const newValue = !high_contrast;
     updatePreferences({ high_contrast: newValue });
     // Simulate API call persistence
-    fetch('http://localhost:8000/users/me/settings', {
+    fetch(`${API_BASE_URL}/users/me/settings`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ high_contrast: newValue })

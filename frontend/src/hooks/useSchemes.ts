@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '@/utils/api';
 
 export interface Scheme {
   id: string;
@@ -16,7 +17,7 @@ export function useSchemes() {
   useEffect(() => {
     async function fetchSchemes() {
       try {
-        const response = await fetch('http://localhost:8000/schemes/');
+        const response = await fetch(`${API_BASE_URL}/schemes/`);
         if (!response.ok) {
           throw new Error('Failed to fetch schemes');
         }

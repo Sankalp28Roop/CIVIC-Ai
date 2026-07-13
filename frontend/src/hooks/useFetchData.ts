@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '@/utils/api';
 
 export function useFetchData<T>(endpoint: string) {
   const [data, setData] = useState<T | null>(null);
@@ -10,7 +11,7 @@ export function useFetchData<T>(endpoint: string) {
       setIsLoading(true);
       setError(null);
       try {
-        const response = await fetch(`http://localhost:8000${endpoint}`);
+        const response = await fetch(`${API_BASE_URL}${endpoint}`);
         if (!response.ok) {
           throw new Error(`Failed to fetch from ${endpoint}`);
         }

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { Activity, CheckCircle, ChevronRight, AlertCircle } from 'lucide-react';
+import { API_BASE_URL } from '@/utils/api';
 
 interface EligibilityResult {
   status: string;
@@ -22,7 +23,7 @@ export default function EligibilityPage() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const res = await fetch('http://localhost:8000/eligibility/check', {
+      const res = await fetch(`${API_BASE_URL}/eligibility/check`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)

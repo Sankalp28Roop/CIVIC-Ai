@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Bell, Search, Menu, Accessibility, Eye } from 'lucide-react';
+import { Bell, Search, Menu, Accessibility, Eye, Globe } from 'lucide-react';
 import { useFetchData } from '@/hooks/useFetchData';
 import { useTheme } from '@/context/ThemeContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { API_BASE_URL } from '@/utils/api';
 
 interface Notification {
@@ -15,7 +16,6 @@ interface Notification {
   isRead: boolean;
 }
 
-// Helper to format ISO strings to relative time
 function timeAgo(dateString: string) {
   const date = new Date(dateString);
   const now = new Date();
@@ -37,6 +37,7 @@ function timeAgo(dateString: string) {
 export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
   const { data: notifications, isLoading: isLoadingNotifs } = useFetchData<Notification[]>('/notifications/');
   const { font_size, high_contrast, updatePreferences } = useTheme();
+  const { lang, toggleLanguage, setLang, t, isHindi, isUrdu } = useLanguage();
   
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const [isAccessOpen, setIsAccessOpen] = useState(false);
@@ -61,7 +62,6 @@ export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
 
   const handleFontSizeChange = (size: string) => {
     updatePreferences({ font_size: size });
-    // Simulate API call persistence
     fetch(`${API_BASE_URL}/users/me/settings`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -72,7 +72,6 @@ export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
   const handleHighContrastToggle = () => {
     const newValue = !high_contrast;
     updatePreferences({ high_contrast: newValue });
-    // Simulate API call persistence
     fetch(`${API_BASE_URL}/users/me/settings`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -92,24 +91,50 @@ export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
       
       {/* Logo Area */}
       <div className="absolute left-1/2 -translate-x-1/2 lg:static lg:translate-x-0 flex items-center lg:w-[208px]">
-        <h1 className="font-bold text-lg tracking-tight font-sans text-brand-accent">Civic-AI</h1>
+        <h1 className="font-bold text-lg tracking-tight font-sans text-brand-accent">
+          {t.app_title}
+        </h1>
       </div>
 
       {/* Desktop/Tablet Global Search */}
       <div className="hidden md:flex flex-1 max-w-xl mx-6 lg:mx-0">
         <div className="relative w-full">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
+          <Search className={`w-4 h-4 absolute top-1/2 -translate-y-1/2 text-text-muted ${isUrdu ? 'right-3' : 'left-3'}`} />
           <input 
             type="text" 
-            placeholder="Search schemes, documents, services..." 
-            className="w-full bg-surface border border-border-subtle rounded-md pl-9 pr-4 py-2 text-sm text-text-primary outline-none focus-visible:ring-1 focus-visible:ring-brand-accent focus-visible:border-brand-accent transition-shadow shadow-[0_1px_2px_rgba(0,0,0,0.05)]"
+            placeholder={t.search_placeholder}
+            className={`w-full bg-surface border border-border-subtle rounded-md py-2 text-sm text-text-primary outline-none focus-visible:ring-1 focus-visible:ring-brand-accent focus-visible:border-brand-accent transition-shadow shadow-[0_1px_2px_rgba(0,0,0,0.05)] ${
+              isUrdu ? 'pr-9 pl-4 text-right font-urdu' : 'pl-9 pr-4 text-left'
+            }`}
           />
         </div>
       </div>
 
       {/* Right Icons */}
-      <div className="flex items-center gap-2 lg:gap-4 ml-auto">
+      <div className="flex items-center gap-2 lg:gap-3 ml-auto">
         
+        {/* Multilingual Switcher Toggle (EN / HI / UR) */}
+        <button
+          onClick={toggleLanguage}
+          className={`px-3.5 py-1.5 rounded-full text-xs font-semibold border transition-all flex items-center gap-2 min-h-[38px] shadow-sm cursor-pointer ${
+            isHindi || isUrdu
+              ? 'bg-brand-accent text-white border-brand-accent'
+              : 'bg-surface text-text-primary border-border-subtle hover:bg-canvas'
+          }`}
+          title="Click to toggle language (English / हिन्दी / اُردُو)"
+        >
+          <div className="flex items-center gap-1 font-bold text-[13px]">
+            <span>A</span>
+            <span className="opacity-40">/</span>
+            <span className="font-hindi text-[14px]">अ</span>
+            <span className="opacity-40">/</span>
+            <span className="font-urdu text-[15px] leading-none">اُ</span>
+          </div>
+          <span className="pl-1 border-l border-current/30 text-[12px] font-medium tracking-wide">
+            {isUrdu ? 'اُردُو (Urdu)' : isHindi ? 'हिन्दी (Hindi)' : 'English'}
+          </span>
+        </button>
+
         {/* Notifications */}
         <div className="relative" ref={notifRef}>
           <button 
@@ -125,10 +150,10 @@ export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
           </button>
 
           {isNotifOpen && (
-            <div className="absolute top-full right-0 mt-2 w-80 bg-surface border border-border-subtle rounded-xl shadow-xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2">
+            <div className={`absolute top-full mt-2 w-80 bg-surface border border-border-subtle rounded-xl shadow-xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 ${isUrdu ? 'left-0' : 'right-0'}`}>
               <div className="flex items-center justify-between px-4 py-3 border-b border-border-subtle">
-                <h3 className="font-semibold text-sm">Notifications</h3>
-                <span className="text-xs text-brand-accent cursor-pointer hover:underline">Mark all read</span>
+                <h3 className="font-semibold text-sm">{t.notifications}</h3>
+                <span className="text-xs text-brand-accent cursor-pointer hover:underline">{t.mark_all_read}</span>
               </div>
               <div className="max-h-[320px] overflow-y-auto flex flex-col">
                 {isLoadingNotifs ? (
@@ -150,7 +175,7 @@ export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
                     </div>
                   ))
                 ) : (
-                  <div className="p-8 text-center text-text-muted text-sm">No notifications</div>
+                  <div className="p-8 text-center text-text-muted text-sm">{t.no_notifications}</div>
                 )}
               </div>
             </div>
@@ -167,12 +192,51 @@ export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
           </button>
 
           {isAccessOpen && (
-            <div className="absolute top-full right-0 mt-2 w-72 bg-surface border border-border-subtle rounded-xl shadow-xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 p-4 flex flex-col gap-4">
-              <h3 className="font-semibold text-sm border-b border-border-subtle pb-2">Accessibility Options</h3>
+            <div className={`absolute top-full mt-2 w-80 bg-surface border border-border-subtle rounded-xl shadow-xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 p-4 flex flex-col gap-4 ${isUrdu ? 'left-0' : 'right-0'}`}>
+              <h3 className="font-semibold text-sm border-b border-border-subtle pb-2">{t.accessibility_options}</h3>
               
-              {/* Text Scaling */}
+              {/* Multilingual Selection inside Accessibility */}
               <div className="flex flex-col gap-2">
-                <label className="text-xs text-text-muted font-medium">Text Scaling</label>
+                <label className="text-xs text-text-muted font-medium flex items-center gap-1.5">
+                  <Globe className="w-3.5 h-3.5" /> {t.language}
+                </label>
+                <div className="grid grid-cols-3 gap-1 bg-canvas p-1 rounded-lg border border-border-subtle">
+                  <button
+                    onClick={() => setLang('en')}
+                    className={`py-1.5 text-xs font-medium rounded-md transition-all ${
+                      lang === 'en'
+                        ? 'bg-surface shadow-sm text-text-primary'
+                        : 'text-text-muted hover:text-text-primary'
+                    }`}
+                  >
+                    English
+                  </button>
+                  <button
+                    onClick={() => setLang('hi')}
+                    className={`py-1.5 text-xs font-medium rounded-md transition-all font-hindi ${
+                      lang === 'hi'
+                        ? 'bg-surface shadow-sm text-text-primary'
+                        : 'text-text-muted hover:text-text-primary'
+                    }`}
+                  >
+                    हिन्दी
+                  </button>
+                  <button
+                    onClick={() => setLang('ur')}
+                    className={`py-1.5 text-xs font-medium rounded-md transition-all font-urdu ${
+                      lang === 'ur'
+                        ? 'bg-surface shadow-sm text-text-primary'
+                        : 'text-text-muted hover:text-text-primary'
+                    }`}
+                  >
+                    اُردُو
+                  </button>
+                </div>
+              </div>
+
+              {/* Text Scaling */}
+              <div className="flex flex-col gap-2 pt-2 border-t border-border-subtle">
+                <label className="text-xs text-text-muted font-medium">{t.text_scaling}</label>
                 <div className="flex bg-canvas p-1 rounded-lg border border-border-subtle">
                   {['Default', 'Large', 'Extra Large'].map((size) => (
                     <button
@@ -184,7 +248,7 @@ export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
                           : 'text-text-muted hover:text-text-primary'
                       }`}
                     >
-                      {size === 'Extra Large' ? 'XL' : size}
+                      {size === 'Extra Large' ? 'XL' : isHindi && size === 'Default' ? 'सामान्य' : isHindi && size === 'Large' ? 'बड़ा' : isUrdu && size === 'Default' ? 'معمولی' : isUrdu && size === 'Large' ? 'بڑا' : size}
                     </button>
                   ))}
                 </div>
@@ -194,7 +258,7 @@ export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
               <div className="flex flex-col gap-2 pt-2 border-t border-border-subtle">
                 <div className="flex items-center justify-between">
                   <label className="text-xs text-text-muted font-medium flex items-center gap-2">
-                    <Eye className="w-3.5 h-3.5" /> High Contrast Mode
+                    <Eye className="w-3.5 h-3.5" /> {t.high_contrast}
                   </label>
                   <button 
                     onClick={handleHighContrastToggle}
@@ -204,7 +268,7 @@ export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
                   </button>
                 </div>
                 <p className="text-[10px] text-text-muted leading-tight mt-1">
-                  Increases overall contrast limits globally across surfaces.
+                  {t.high_contrast_desc}
                 </p>
               </div>
 

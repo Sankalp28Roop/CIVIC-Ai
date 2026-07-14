@@ -120,3 +120,22 @@ body.contrast-high [class*="border"] {
 .input-field:focus-visible {
   @apply border-brand-accent ring-1 ring-brand-accent;
 }
+
+/* Devanagari / Hindi Typography */
+.font-hindi, html.font-hindi body {
+  font-family: 'Noto Sans Devanagari', var(--font-sans), sans-serif !important;
+  line-height: 1.65;
+}
+
+/* Perso-Arabic / Urdu Typography & Nastaliq Calligraphy */
+.font-urdu, html.font-urdu body {
+  font-family: 'Noto Nastaliq Urdu', 'Noto Sans Arabic', var(--font-sans), sans-serif !important;
+  line-height: 1.95;
+}
+
+/* RTL Specific adjustments for smooth Urdu rendering */
+html[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+}
+

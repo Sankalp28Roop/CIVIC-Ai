@@ -7,11 +7,13 @@ import { useSchemes } from '@/hooks/useSchemes';
 import { ChevronRight, Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { API_BASE_URL } from '@/utils/api';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function Home() {
   const { data: schemes, isLoading: isLoadingSchemes, error: schemesError } = useSchemes();
   const [userName, setUserName] = useState<string>("");
   const [isLoadingUser, setIsLoadingUser] = useState(true);
+  const { t, isRTL } = useLanguage();
 
   const router = useRouter();
 
@@ -46,17 +48,17 @@ export default function Home() {
              <div className="h-8 bg-surface rounded animate-pulse w-64 mb-2"></div>
           ) : (
             <h2 className="text-[28px] font-bold tracking-tight text-text-primary mb-1 flex items-center gap-2">
-              Welcome back, {userName} <span className="text-[28px]">👋</span>
+              {t.welcome_back}{userName ? `, ${userName}` : ''} <span className="text-[28px]">👋</span>
             </h2>
           )}
-          <p className="text-text-muted text-[15px]">Your AI assistant for government schemes and services.</p>
+          <p className="text-text-muted text-[15px] leading-relaxed">{t.ai_assistant_sub}</p>
         </div>
         
         <button 
           onClick={() => router.push('/eligibility')}
           className="btn-primary shrink-0 self-start sm:self-auto shadow-sm"
         >
-          <Plus className="w-[18px] h-[18px] mr-1.5" /> New Application
+          <Plus className={`w-[18px] h-[18px] ${isRTL ? 'ml-1.5' : 'mr-1.5'}`} /> {t.new_application}
         </button>
       </div>
 
@@ -69,14 +71,14 @@ export default function Home() {
       <section>
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h3 className="font-bold text-text-primary text-[18px]">Popular Schemes</h3>
-            <p className="text-[14px] text-text-muted mt-1">Check your eligibility and application status</p>
+            <h3 className="font-bold text-text-primary text-[18px]">{t.popular_schemes}</h3>
+            <p className="text-[14px] text-text-muted mt-1 leading-relaxed">{t.popular_schemes_sub}</p>
           </div>
-          <button className="text-[14px] font-medium text-brand-accent hover:underline hidden md:flex items-center">
-            View all schemes <ChevronRight className="w-4 h-4 ml-1" />
+          <button onClick={() => router.push('/schemes')} className="text-[14px] font-medium text-brand-accent hover:underline hidden md:flex items-center cursor-pointer">
+            {t.view_all_schemes} <ChevronRight className={`w-4 h-4 transition-transform ${isRTL ? 'mr-1 rotate-180' : 'ml-1'}`} />
           </button>
-          <button className="text-[14px] font-medium text-brand-accent hover:underline md:hidden">
-            View all
+          <button onClick={() => router.push('/schemes')} className="text-[14px] font-medium text-brand-accent hover:underline md:hidden cursor-pointer">
+            {t.view_all}
           </button>
         </div>
         
